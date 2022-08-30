@@ -5,9 +5,9 @@
 # 公众号appSecret
 "app_secret": "2042f4557a825639be45b3b8597ca269",
 # 模板消息id
-"template_id": "",
+"template_id": "WV0JUIzsWfLuFtODPuF4fvg6rgC5nZ166iEXdDG9jzQ",
 # 接收公众号消息的微信号，如果有多个，需要在[]里用英文逗号间隔，例如["wx1", "wx2"]
-"user": ["oN-z45xmz0CTOZ82yGLOvB1nLZVg","oN-z45xmz0CTOZ82yGLOvB1nLZVg"],
+"user": ["oN-z45xmz0CTOZ82yGLOvB1nLZVg","oN-z454wipkKWDjdeYZ_ccqVyGHQ","oN-z455UIMQ8GeECeIGAGVW7z080"],
 
 # 信息配置
 # 和风天气apikey
@@ -17,7 +17,7 @@
 # 所在地区，可为省，城市，区，县，同时支持国外城市，例如伦敦(国外城市可能获取不到pm2.5，空气质量，今日建议等数据)
 "region": "益阳",
 # 生日1
-"birthday1": {"name": "啊芝", "birthday": "r2003-08-22"},
+"birthday": {"name": "啊芝", "birthday": "r2003-08-22"},
 # 金句中文，如果为空，默认会读取金山的每日金句
 "note_ch": "",
 # 金句英文
