@@ -313,7 +313,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "color": get_color()
             },
             "con_luck": {
-                "value": con,
+                "value": con_luck,
                 "color": get_color()
             },
 
