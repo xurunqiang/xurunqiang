@@ -1,3 +1,10 @@
+# -*- couding:utf-8 -*-
+"""
+作者：徐闰蔷
+日期：2022年08月30日
+"""
+from bs4 import BeautifulSoup
+import urllib.request,urllib.error
 import random
 from time import localtime
 from requests import get, post
@@ -13,6 +20,67 @@ def get_color():
     color_list = get_colors(100)
     return random.choice(color_list)
 
+
+def judge_con(my_birthday_m_d):
+    if my_birthday_m_d >= 120 and my_birthday_m_d < 219:
+        return 10
+    if my_birthday_m_d >= 219 and my_birthday_m_d < 321:
+        return 11
+    if my_birthday_m_d >= 321 and my_birthday_m_d < 420:
+        return 0
+    if my_birthday_m_d >= 420 and my_birthday_m_d < 521:
+        return 1
+    if my_birthday_m_d >= 521 and my_birthday_m_d < 622:
+        return 2
+    if my_birthday_m_d >= 622 and my_birthday_m_d < 723:
+        return 3
+    if my_birthday_m_d >= 723 and my_birthday_m_d < 823:
+        return 4
+    if my_birthday_m_d >= 823 and my_birthday_m_d < 923:
+        return 5
+    if my_birthday_m_d >= 923 and my_birthday_m_d < 1024:
+        return 6
+    if my_birthday_m_d >= 1024 and my_birthday_m_d < 1123:
+        return 7
+    if my_birthday_m_d >= 1123 and my_birthday_m_d < 1222:
+        return 8
+    if my_birthday_m_d >= 1222 or my_birthday_m_d < 219:
+        return 9
+
+
+def get_con_luck():
+    f = open('./星座运势.html','rb')
+    html = f.read()
+    bs = BeautifulSoup(html,"html.parser")
+    t_list1 = list(bs.find_all(class_="text"))
+    t_list2 = list(bs.find_all(class_="name"))
+    s = bs.find_all(class_="con")
+    alist1 = []
+    alist2 = []
+    for j in range(1,len(t_list1)):
+        alist1 = alist1 + list(t_list1[j])
+    for k in range(len(t_list2)):
+        alist2 = alist2 + list(t_list2[k])
+    return alist2[judge_con(my_birthday_m_d)],alist1[judge_con(my_birthday_m_d)]
+
+
+def askURL():
+    header = {
+        "User-Agent": "Mozilla / 5.0(Windows NT 10.0;Win64;x64) AppleWebKit / 537.36(KHTML, likeGecko) Chrome / 104.0.5112.102Safari / 537.36Edg / 104.0.1293.70"
+    }
+    request = urllib.request.Request(url="https://www.1212.com/luck/", headers=header)
+    html = ""
+    try:
+        response = urllib.request.urlopen(request)
+        html = response.read().decode("utf-8")
+    except urllib.error.URLError as e:
+        if hasattr(e, "code"):
+            print(e.code)
+        if hasattr(e, "reason"):
+            print(e.reason)
+    file = open('./星座运势.html','w',encoding='utf-8')
+    file.write(html)
+    file.close
 
 def get_access_token():
     # appId
@@ -160,7 +228,7 @@ def get_ciba():
 
 
 def send_message(to_user, access_token, region_name, weather, temp, wind_dir, note_ch, note_en, max_temp, min_temp,
-                 sunrise, sunset, category, pm2p5, proposal, chp):
+                 sunrise, sunset, category, pm2p5, proposal, chp , con, con_luck):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -168,13 +236,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
     day = localtime().tm_mday
     today = datetime.date(datetime(year=year, month=month, day=day))
     week = week_list[today.isoweekday() % 7]
-    # 获取在一起的日子的日期格式
-    #love_year = int(config["love_date"].split("-")[0])
-    #love_month = int(config["love_date"].split("-")[1])
-    #love_day = int(config["love_date"].split("-")[2])
-    #love_date = date(love_year, love_month, love_day)
-    # 获取在一起的日期差
-    #love_days = str(today.__sub__(love_date)).split(" ")[0]
+
     # 获取所有生日数据
     birthdays = {}
     for k, v in config.items():
@@ -206,10 +268,6 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": wind_dir,
                 "color": get_color()
             },
-            #"love_day": {
-            #    "value": love_days,
-            #    "color": get_color()
-            #},
             "note_en": {
                 "value": note_en,
                 "color": get_color()
@@ -248,6 +306,14 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
             },
             "chp": {
                 "value": chp,
+                "color": get_color()
+            },
+            "con": {
+                "value": con,
+                "color": get_color()
+            },
+            "con_luck": {
+                "value": con,
                 "color": get_color()
             },
 
@@ -293,6 +359,14 @@ if __name__ == "__main__":
         os.system("pause")
         sys.exit(1)
 
+
+    # 获取生日
+    my_birthday = config["birthday1"]
+    my_birthday = my_birthday["birthday"]
+    if my_birthday[0] == 'r':
+        my_birthday = my_birthday.replace('r', '')
+    my_birthday = list(my_birthday)
+    my_birthday_m_d = int(my_birthday[5]) * 1000 + int(my_birthday[6]) * 100 + int(my_birthday[8]) * 10 + int(my_birthday[9]) * 1
     # 获取accessToken
     accessToken = get_access_token()
     # 接收的用户
@@ -306,8 +380,14 @@ if __name__ == "__main__":
         # 获取词霸每日金句
         note_ch, note_en = get_ciba()
     chp = get_tianhang()
+    # 获取每日星座运势
+    askURL()
+    con = config["con"]
+    con_luck = config["con_luck"]
+    if con == "" and con_luck == "":
+        con,con_luck = get_con_luck()
     # 公众号推送消息
     for user in users:
         send_message(user, accessToken, region, weather, temp, wind_dir, note_ch, note_en, max_temp, min_temp, sunrise,
-                     sunset, category, pm2p5, proposal, chp)
+                     sunset, category, pm2p5, proposal, chp, con, con_luck)
     os.system("pause")
