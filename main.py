@@ -61,7 +61,7 @@ def get_con_luck():
         alist1 = alist1 + list(t_list1[j])
     for k in range(len(t_list2)):
         alist2 = alist2 + list(t_list2[k])
-    return alist2[judge_con(my_birthday_m_d)],alist1[judge_con(my_birthday_m_d)]
+    return alist2[judge_con(my_birthday_m_d2)],alist1[judge_con(my_birthday_m_d2)]
 
 
 def askURL():
@@ -313,7 +313,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "color": get_color()
             },
             "con_luck": {
-                "value": con_luck,
+                "value": con,
                 "color": get_color()
             },
 
@@ -367,6 +367,13 @@ if __name__ == "__main__":
         my_birthday = my_birthday.replace('r', '')
     my_birthday = list(my_birthday)
     my_birthday_m_d = int(my_birthday[5]) * 1000 + int(my_birthday[6]) * 100 + int(my_birthday[8]) * 10 + int(my_birthday[9]) * 1
+    y = int(my_birthday[0]) * 1000 + int(my_birthday[1]) * 100 + int(my_birthday[2]) * 10 + int(my_birthday[3])
+    m = int(my_birthday[5]) * 10 + int(my_birthday[6])
+    d = int(my_birthday[8]) * 10 + int(my_birthday[9])
+    date1 = ZhDate(y, m, d)
+    dt_date = date1.to_datetime()
+    my_birthday2 = list(str(dt_date))
+    my_birthday_m_d2 = int(my_birthday2[5]) * 1000 + int(my_birthday2[6]) * 100 + int(my_birthday2[8]) * 10 + int(my_birthday2[9]) * 1
     # 获取accessToken
     accessToken = get_access_token()
     # 接收的用户
